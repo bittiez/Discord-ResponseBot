@@ -1,33 +1,24 @@
 package US.bittiez.ResponseBot.Discord;
 
-import com.esotericsoftware.yamlbeans.YamlReader;
-import com.esotericsoftware.yamlbeans.YamlWriter;
+import US.bittiez.ResponseBot.Discord.Config.Config;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.util.DiscordException;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class ResponseBot {
+    private static File settings = new File(Paths.get(new File(".").getAbsolutePath(), "config.yml").toAbsolutePath().toString());
     private IDiscordClient discordClient;
     private DiscordListener discordListener;
     private APIAI apiai;
-
-    private File settings;
     private Settings config;
 
     public ResponseBot() {
+        config = new Settings();
 
-        String thePath = new File(".").getAbsolutePath();
-        settings = new File(Paths.get(thePath, "config.yml").toAbsolutePath().toString());
-
-        initializeSettings();
-        if (config == null)
+        if (new Config().INIT_SETTINGS(settings, config).isNewConfig())
             return;
 
         this.apiai = new APIAI(config);
@@ -44,36 +35,5 @@ public class ResponseBot {
             discordClient.getDispatcher().registerListener(discordListener);
         }
 
-    }
-
-    private void initializeSettings() {
-        try {
-
-            if (settings.exists()) {
-                config = new YamlReader(new FileReader(settings)).read(Settings.class);
-            } else {
-                settings.createNewFile();
-                config = new Settings();
-
-                config.authorized_user = new ArrayList<String>();
-                config.authorized_user.add("1234567885432221");
-
-                config.ignoreUser = new ArrayList<String>();
-                config.ignoreUser.add("6546546521321849");
-
-                config.listenToChannels = new ArrayList<String>();
-                config.listenToChannels.add("13223234536454566");
-
-                config.prefix = "!";
-
-                config.token = "11421ggdsfg35gbewgewgrehtg";
-				config.api_token = "11421ggdsfg35gbewgewgrehtg";
-                YamlWriter writer = new YamlWriter(new FileWriter(settings));
-                writer.write(config);
-                writer.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

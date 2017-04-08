@@ -10,9 +10,6 @@ import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DiscordListener {
     private APIAI apiai;
     private IDiscordClient client;
@@ -29,7 +26,7 @@ public class DiscordListener {
         IMessage message = event.getMessage();
         IChannel channel = message.getChannel();
 
-        if(config.ignoreUser.contains(message.getAuthor().getID()))
+        if (config.ignoreUser.contains(message.getAuthor().getID()))
             return;
 
         if (message.getContent().toLowerCase().startsWith(config.prefix + "sayhello")) {
